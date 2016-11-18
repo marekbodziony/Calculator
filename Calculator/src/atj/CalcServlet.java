@@ -81,18 +81,14 @@ public class CalcServlet extends HttpServlet {
 			if (session.getAttribute("action") == null){	
 				calculator.setB(calculator.getA());
 				calculator.setA(0);	
+				session.setAttribute("action", action);
 			}
-			session.setAttribute("action", action);
-			if (session.getAttribute("hideComma") != null && session.getAttribute("hideComma").equals(true)) {session.removeAttribute("hideComma");}
-			calculator.setResultDetails(calculator.getResultDetails() + " " + action);
-			// action "+/-" was selected
-			if (session.getAttribute("action").equals("+/-")){
-				if (!calculator.getResult().equals("0")) calculator.changeSign();
-				calculator.setA(Double.parseDouble(calculator.getResult()));
-				//calculator.setResultDetails(calculator.getResultDetails() + " =");
-				session.removeAttribute("action");
-				//session.setAttribute("score", calculator.getA());
-			}
+		
+//			session.setAttribute("action", action);
+//			if (session.getAttribute("hideComma") != null && session.getAttribute("hideComma").equals(true)) {session.removeAttribute("hideComma");}
+//			calculator.setResultDetails(calculator.getResultDetails() + " " + action);
+		
+			
 			// action "sqrt" was selected
 			if (session.getAttribute("action").equals("sqrt")){
 				if (Double.parseDouble(calculator.getResult()) < 0){
@@ -105,8 +101,22 @@ public class CalcServlet extends HttpServlet {
 				else{
 					calculator.setA(Double.parseDouble(calculator.getResult()));
 					calculator.sqrt();
+					//session.removeAttribute("action");
+					if (session.getAttribute("hideComma") != null && session.getAttribute("hideComma").equals(true)) {session.removeAttribute("hideComma");}
+				}
+			}
+			// action "+/-" was clicked
+			if (session.getAttribute("action").equals("+/-")){
+				if (!calculator.getResult().equals("0")) {
+					calculator.setA(Double.parseDouble(calculator.getResult()));
+					calculator.changeSign();
 					session.removeAttribute("action");
 				}
+			}
+			if (session.getAttribute("action") != null){
+				session.setAttribute("action", action);
+				if (session.getAttribute("hideComma") != null && session.getAttribute("hideComma").equals(true)) {session.removeAttribute("hideComma");}
+				calculator.setResultDetails(calculator.getResultDetails() + " " + action);
 			}
 		}
 		

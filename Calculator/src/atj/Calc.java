@@ -31,8 +31,8 @@ public class Calc {
 	}
 	// change sign (+/-)
 	public String changeSign(){
-		float cs = Float.parseFloat(result);
-		return result = "" + (cs*(-1));
+		a *=(-1);
+		return result = "" + a;
 	}
 	// sqrt
 	public String sqrt(){
