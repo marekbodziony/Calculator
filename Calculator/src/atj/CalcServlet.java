@@ -74,11 +74,15 @@ public class CalcServlet extends HttpServlet {
 		// when user click action button (+,-,*,/,%,sqrt,+/-)
 		if (request.getParameterMap().containsKey("action")){
 			String action = request.getParameter("action");
+			// if user click action button first time move value A to B, and set current value to A (multiple clicking will change only 'action' attribute)
+			if (session.getAttribute("action") == null){	
+				calculator.setB(calculator.getA());
+				calculator.setA(0);	
+			}
+			if (session.getAttribute("action") != null && session.getAttribute("score") == null) {
+				
+			}
 			session.setAttribute("action", action);
-			//if (session.getAttribute("score") == null) {session.setAttribute("score",calculator.getA()+calculator.getB()); }
-			calculator.setB(calculator.getA());
-			calculator.setA(0);
-			
 			calculator.setResultDetails(calculator.getResultDetails() + " " + action);	
 		}
 		// when user click "=" button
@@ -97,6 +101,11 @@ public class CalcServlet extends HttpServlet {
 			calculator.setResultDetails(calculator.getResultDetails() + " =");
 			session.removeAttribute("action");
 			session.setAttribute("score", Float.parseFloat(calculator.getResult()));
+			
+			// if ERROR occurred disable all buttons and display ERR as a result
+			//request.setAttribute("hide", true);
+			//calculator.setResult("ERR");
+			//calculator.setResultDetails("");
 		}
 		
 		// get calculator view from "calcView.jsp" file
