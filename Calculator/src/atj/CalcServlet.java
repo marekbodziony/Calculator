@@ -57,6 +57,7 @@ public class CalcServlet extends HttpServlet {
 			else if (btn.equals(".") && !calculator.getResult().contains(".")){
 				calculator.setResult(calculator.getResult() + ".");
 				session.setAttribute("hideComma", true);
+				calculator.setA(Double.parseDouble(calculator.getResult()));
 			}
 			// when number button was clicked (0,1,2,3,4,5,6,7,8,9)
 			else{				
@@ -70,7 +71,7 @@ public class CalcServlet extends HttpServlet {
 				}
 				calculator.setResult(calculator.getResult() + btn);
 				calculator.setResultDetails(calculator.getResultDetails() + " " + btn);				
-				calculator.setA(Float.parseFloat(calculator.getResult()));
+				calculator.setA(Double.parseDouble(calculator.getResult()));
 			}
 		}
 		// when user click action button (+,-,*,/,%,sqrt,+/-)
@@ -86,13 +87,29 @@ public class CalcServlet extends HttpServlet {
 			calculator.setResultDetails(calculator.getResultDetails() + " " + action);
 			// action "+/-" was selected
 			if (session.getAttribute("action").equals("+/-")){
-				calculator.changeSign();
-				calculator.setA(Float.parseFloat(calculator.getResult()));
+				if (!calculator.getResult().equals("0")) calculator.changeSign();
+				calculator.setA(Double.parseDouble(calculator.getResult()));
 				//calculator.setResultDetails(calculator.getResultDetails() + " =");
 				session.removeAttribute("action");
-				session.setAttribute("score", calculator.getA());
+				//session.setAttribute("score", calculator.getA());
+			}
+			// action "sqrt" was selected
+			if (session.getAttribute("action").equals("sqrt")){
+				if (Double.parseDouble(calculator.getResult()) < 0){
+					// if ERROR occurred disable all buttons and display ERR as a result
+					request.setAttribute("hide", true);
+					request.setAttribute("hideComma", true);
+					calculator.setResult("ERR");
+					calculator.setResultDetails("");
+				}
+				else{
+					calculator.setA(Double.parseDouble(calculator.getResult()));
+					calculator.sqrt();
+					session.removeAttribute("action");
+				}
 			}
 		}
+		
 		// when user click "=" button
 		if (request.getParameterMap().containsKey("equals")){
 			if (session.getAttribute("action") != null){
@@ -105,19 +122,35 @@ public class CalcServlet extends HttpServlet {
 					calculator.sub();
 				}
 				// action "*" was selected
+				if (session.getAttribute("action").equals("*")){
+					calculator.multi();
+				}
 				// action "/" was selected
+				if (session.getAttribute("action").equals("/")){
+					if (calculator.getA() == 0){
+						// if ERROR occurred disable all buttons and display ERR as a result
+						request.setAttribute("hide", true);
+						request.setAttribute("hideComma", true);
+						calculator.setResult("ERR");
+						calculator.setResultDetails("");
+					}
+					else{
+						calculator.div();
+					}
+				}
 				// action "%" was selected
 				// action "sqrt" was selected
 			}
 			calculator.setResultDetails(calculator.getResultDetails() + " =");
 			session.removeAttribute("action");
 			session.removeAttribute("hideComma");
-			session.setAttribute("score", Float.parseFloat(calculator.getResult()));
+			if (!calculator.getResult().equals("ERR"))session.setAttribute("score", Double.parseDouble(calculator.getResult()));
 			
 			// if ERROR occurred disable all buttons and display ERR as a result
-			//request.setAttribute("hide", true);
-			//calculator.setResult("ERR");
-			//calculator.setResultDetails("");
+//			request.setAttribute("hide", true);
+//			request.setAttribute("hideComma", true);
+//			calculator.setResult("ERR");
+//			calculator.setResultDetails("");
 		}
 		
 		// get calculator view from "calcView.jsp" file
