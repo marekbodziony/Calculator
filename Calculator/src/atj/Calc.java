@@ -8,13 +8,21 @@ public class Calc {
 	private String resultDetails;
 	//private String action;
 	
-	// adding
+	// adding (+)
 	public String add(){
 		a = a + b;
 		return result = "" + a;
 	}
-	// 
-	
+	// subtraction (-)
+	public String sub(){
+		a = b - a;
+		return result = "" + a;
+	}
+	// change sign (+/-)
+	public String changeSign(){
+		float cs = Float.parseFloat(result);
+		return result = "" + (cs*(-1));
+	}
 	
 	// getter
 	public float getA() { return a;}

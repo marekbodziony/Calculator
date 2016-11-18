@@ -46,7 +46,7 @@
 </tr>
 <tr>
 	<td><input type="submit" name="btn" value="0" class="calcbutton" ${ hide ? 'disabled="disabled"' : ''}></td>
-	<td><input type="submit" name="btn" value="," class="calcbutton" ${ hide ? 'disabled="disabled"' : ''}></td>
+	<td><input type="submit" name="btn" value="." class="calcbutton" ${ hideComma ? 'disabled="disabled"' : ''}></td>
 	<td><input type="submit" name="action" value="+/-" class="calcbutton" ${ hide ? 'disabled="disabled"' : ''}></td>
 	<td><input type="submit" name="action" value="+" class="calcbutton" ${ hide ? 'disabled="disabled"' : ''}></td>
 </tr>

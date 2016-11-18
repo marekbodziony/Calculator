@@ -51,13 +51,15 @@ public class CalcServlet extends HttpServlet {
 				calculator.setB(0);
 				session.removeAttribute("action");
 				session.removeAttribute("score");
+				session.removeAttribute("hideComma");
 			}
 			// when "," button was clicked
-			else if (btn.equals(",")){
-				// dodac obsluge ","
+			else if (btn.equals(".") && !calculator.getResult().contains(".")){
+				calculator.setResult(calculator.getResult() + ".");
+				session.setAttribute("hideComma", true);
 			}
 			// when number button was clicked (0,1,2,3,4,5,6,7,8,9)
-			else{
+			else{				
 				if (calculator.getResult().equals("0") || calculator.getA() == 0){
 					calculator.setResult("");
 				}
@@ -68,7 +70,7 @@ public class CalcServlet extends HttpServlet {
 				}
 				calculator.setResult(calculator.getResult() + btn);
 				calculator.setResultDetails(calculator.getResultDetails() + " " + btn);				
-				calculator.setA(Integer.parseInt(calculator.getResult()));
+				calculator.setA(Float.parseFloat(calculator.getResult()));
 			}
 		}
 		// when user click action button (+,-,*,/,%,sqrt,+/-)
@@ -79,27 +81,37 @@ public class CalcServlet extends HttpServlet {
 				calculator.setB(calculator.getA());
 				calculator.setA(0);	
 			}
-			if (session.getAttribute("action") != null && session.getAttribute("score") == null) {
-				
-			}
 			session.setAttribute("action", action);
-			calculator.setResultDetails(calculator.getResultDetails() + " " + action);	
+			if (session.getAttribute("hideComma") != null && session.getAttribute("hideComma").equals(true)) {session.removeAttribute("hideComma");}
+			calculator.setResultDetails(calculator.getResultDetails() + " " + action);
+			// action "+/-" was selected
+			if (session.getAttribute("action").equals("+/-")){
+				calculator.changeSign();
+				calculator.setA(Float.parseFloat(calculator.getResult()));
+				//calculator.setResultDetails(calculator.getResultDetails() + " =");
+				session.removeAttribute("action");
+				session.setAttribute("score", calculator.getA());
+			}
 		}
 		// when user click "=" button
 		if (request.getParameterMap().containsKey("equals")){
 			if (session.getAttribute("action") != null){
-				// action "+" was clicked
+				// action "+" was selected
 				if (session.getAttribute("action").equals("+")){
 					calculator.add();
 				}
-				// action "-" was clicked
-				// action "*" was clicked
-				// action "/" was clicked
-				// action "%" was clicked
-				// action "sqrt" was clicked
+				// action "-" was selected
+				if (session.getAttribute("action").equals("-")){
+					calculator.sub();
+				}
+				// action "*" was selected
+				// action "/" was selected
+				// action "%" was selected
+				// action "sqrt" was selected
 			}
 			calculator.setResultDetails(calculator.getResultDetails() + " =");
 			session.removeAttribute("action");
+			session.removeAttribute("hideComma");
 			session.setAttribute("score", Float.parseFloat(calculator.getResult()));
 			
 			// if ERROR occurred disable all buttons and display ERR as a result
